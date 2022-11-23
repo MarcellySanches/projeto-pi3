@@ -1,0 +1,14 @@
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1em 0;
+  border-radius: 5px;  
+  padding: 0.8em;
+  background-color: #e5e5e5e5;
+}
+
+.title span {
+  margin-left: 1em;
+  font-size: 1.5em;
+}

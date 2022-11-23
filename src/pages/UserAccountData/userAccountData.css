@@ -1,0 +1,81 @@
+.content{
+    margin-left: 200px;
+    padding:1px 16px;
+  }
+
+@media screen and (max-width: 768px) {
+
+  .content {
+    margin-left:0px;
+  }
+}
+
+.container {
+  display: flex;
+  background-color: #e5e5e5e5;
+  border-radius: 5px;
+  padding:0.8em;
+  align-items:center;
+  margin-bottom: 1.5em;
+
+}
+
+.accountPhoto {
+  width:280px;
+  height:280px;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  cursor:pointer;
+
+}
+
+.accountPhoto input {
+  display: none;
+}
+
+.accountPhoto span {
+  z-index:99;
+  position:absolute;
+  opacity:0.2;
+  transition: all 0.5s;
+}
+
+.accountPhoto span:hover {
+  opacity:1;
+}
+
+.accountForm img{
+  margin-bottom:1em;
+  border-radius:50%;
+  object-fit:cover;
+
+}
+
+.accountForm label{
+  margin-bottom:0.5em;
+  font-size:1.4em;
+
+}
+
+.accountForm input{
+  margin-bottom:1em;
+  padding: 0.7em;
+  border:0;
+  border-radius:5px;
+  max-width:600px;
+
+}
+
+.accountForm button{
+  max-width:600px;
+
+}
+
+
+
+
+
+
+
