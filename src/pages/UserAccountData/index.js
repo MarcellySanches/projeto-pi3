@@ -99,7 +99,7 @@ export default function UserAccountData() {
 
       <div className="content">
         <TitleArea name="Minha conta">
-          <MdManageAccounts size={25} />
+          <MdManageAccounts size={30} />
         </TitleArea>
 
         <div className="container">

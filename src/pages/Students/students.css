@@ -1,0 +1,87 @@
+.students {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.students span {
+  margin: 3em 0;
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+.addStudent {
+  float: right;
+  margin-bottom: 1em;
+  background-color: #015249;
+  color: #e5e5e5e5;
+  border: 0;
+  border-radius: 5px;
+  padding: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+.addStudent:hover {
+  background-color: hsl(173, 98%, 16%, 0.85);
+}
+
+.addStudent svg {
+  margin-left: 0.5em;
+}
+
+.badge {
+  background-color: #32cd32;
+  border-radius: 3px;
+  color: #e5e5e5e5;
+  font-weight:bold;
+  padding: 0.5em;
+}
+
+table {
+  border: 1px solid #e5e5e5e5;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table caption {
+  font-size: 1.5em;
+  margin: 0.5 0 0.75;
+}
+
+table tr {
+  background-color: hsl(173, 98%, 16%, 0.8);
+
+  border: 2px solid #dfdce3;
+  padding: 0.75em;
+}
+
+table td,
+table th {
+  background-color: hsl(173, 98%, 16%, 0.1);
+  color: #101010;
+  padding: 0.75em;
+  text-align: center;
+}
+
+table th {
+  font-size: 1em;
+  text-transform: uppercase;
+  color: #e5e5e5e5;
+}
+
+table td button {
+  border: 0;
+  padding: 0.75em;
+  margin: 0.1em;
+  align-items: center;
+  display:inline-block;
+  border-radius: 50%;
+}

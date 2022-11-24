@@ -59,7 +59,7 @@
 
 }
 
-.accountForm input{
+.accountForm input, select{
   margin-bottom:1em;
   padding: 0.7em;
   border:0;

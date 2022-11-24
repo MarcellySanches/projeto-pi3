@@ -21,7 +21,7 @@ export default function Header() {
           alt="Foto de perfil"
         />
       </div>
-      <Link to="/dashboard">
+      <Link to="/alunos">
         <MdPeople color="#000" size={26} />
         Alunos
       </Link>
