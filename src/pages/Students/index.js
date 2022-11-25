@@ -20,6 +20,7 @@ export default function Students() {
   const [lastData, setLastData] = useState();
 
   useEffect(() => {
+    getStudents();
     return () => {};
   }, []);
 
@@ -30,7 +31,9 @@ export default function Students() {
       .orderBy("nome", "asc")
       .limit(10)
       .get()
-      .then((data) => {})
+      .then((data) => {
+        verifyData(data);
+      })
       .catch((error) => {
         setMoreStudents(false);
       });
@@ -106,26 +109,46 @@ export default function Students() {
                 </tr>
               </thead>
               <tbody>
-                <td data-label="Matricula">Matricula</td>
-                <td data-label="Nome">Nome</td>
-                <td data-label="Turma">Turma</td>
-                <td data-label="Status">
-                  <span className="badge">Ativo</span>
-                </td>
-                <td data-label="Botoes">
-                  <button
-                    classnName="btn-table"
-                    style={{ backgroundColor: "#578c90", color: "#e5e5e5e5" }}
-                  >
-                    <MdSearch size={20} />
-                  </button>
-                  <button
-                    classnName="btn-table"
-                    style={{ backgroundColor: "#339966", color: "#e5e5e5e5" }}
-                  >
-                    <MdModeEditOutline size={20} />
-                  </button>
-                </td>
+                {dashStudents.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td data-label="Matricula">{item.matricula}</td>
+                      <td data-label="Nome">{item.nome}</td>
+                      <td data-label="Turma">{item.turmaSelecionada}</td>
+                      <td data-label="Status">
+                        <span
+                          className="badge"
+                          style={{
+                            background:
+                              item.status === "Ativo" ? "#32cd32" : "#Da2A2A",
+                          }}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                      <td data-label="Botoes">
+                        <button
+                          classnName="btn-table"
+                          style={{
+                            backgroundColor: "#578c90",
+                            color: "#e5e5e5e5",
+                          }}
+                        >
+                          <MdSearch size={20} />
+                        </button>
+                        <button
+                          classnName="btn-table"
+                          style={{
+                            backgroundColor: "#339966",
+                            color: "#e5e5e5e5",
+                          }}
+                        >
+                          <MdModeEditOutline size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </>
