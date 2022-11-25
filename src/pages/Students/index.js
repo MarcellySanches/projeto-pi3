@@ -1,13 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import firebase from "../../services/firebaseConnection";
 import "./students.css";
 import { AuthContext } from "../../contexts/auth";
-import { MdPeople, MdOutlineAddCircle, MdSearch, MdModeEditOutline } from "react-icons/md";
+import {
+  MdPeople,
+  MdOutlineAddCircle,
+  MdSearch,
+  MdModeEditOutline,
+} from "react-icons/md";
 import Header from "../../components/Header";
 import TitleArea from "../../components/TitleArea";
 import { Link } from "react-router-dom";
 
 export default function Students() {
-  const [allStudents, setAllStudents] = useState([1]);
+  const [dashStudents, setDashStudents] = useState([]);
+  const [load, setLoad] = useState(true);
+  const [moreStudents, setMoreStudents] = useState(false);
+  const [noData, setNoData] = useState(false);
+  const [lastData, setLastData] = useState();
+
+  useEffect(() => {
+    return () => {};
+  }, []);
+
+  async function getStudents() {
+    await firebase
+      .firestore()
+      .collection("students")
+      .orderBy("nome", "asc")
+      .limit(10)
+      .get()
+      .then((data) => {})
+      .catch((error) => {
+        setMoreStudents(false);
+      });
+
+    setLoad(false);
+  }
+
+  async function verifyData(data) {
+    const noStudentsData = data.size === 0;
+
+    if (!noData) {
+      let list = [];
+
+      data.forEach((value) => {
+        list.push({
+          curso: value.data().curso,
+          cidade: value.data().cidade,
+          contato: value.data().contato,
+          endereco: value.data().endereco,
+          estado: value.data().estado,
+          matricula: value.data().matricula,
+          nascimento: value.data().nascimento,
+          nome: value.data().nome,
+          status: value.data().status,
+          turmaSelecionada: value.data().turmaSelecionada,
+          id: value.id,
+        });
+      });
+
+      const lastData = data.docs[data.docs.length - 1];
+
+      setDashStudents((students) => [...students, ...list]);
+      setLastData(lastData);
+    } else {
+      setNoData(true);
+    }
+
+    setMoreStudents(false);
+  }
+
   return (
     <div>
       <Header />
@@ -16,7 +79,7 @@ export default function Students() {
           <MdPeople size={30} />
         </TitleArea>
 
-        {allStudents.length === 0 ? (
+        {dashStudents.length === 0 ? (
           <div className="container students">
             <span>Nenhum aluno cadastrado</span>
 
@@ -50,11 +113,17 @@ export default function Students() {
                   <span className="badge">Ativo</span>
                 </td>
                 <td data-label="Botoes">
-                  <button classnName="btn-table" style={{backgroundColor: '#578c90', color:'#e5e5e5e5'}}>
-                    <MdSearch size={20}/>
+                  <button
+                    classnName="btn-table"
+                    style={{ backgroundColor: "#578c90", color: "#e5e5e5e5" }}
+                  >
+                    <MdSearch size={20} />
                   </button>
-                  <button classnName="btn-table" style={{backgroundColor: '#339966', color:'#e5e5e5e5'}}>
-                    <MdModeEditOutline size={20}/>
+                  <button
+                    classnName="btn-table"
+                    style={{ backgroundColor: "#339966", color: "#e5e5e5e5" }}
+                  >
+                    <MdModeEditOutline size={20} />
                   </button>
                 </td>
               </tbody>
