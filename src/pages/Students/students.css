@@ -55,7 +55,7 @@ table caption {
   margin: 0.5 0 0.75;
 }
 
-table thead{
+table thead {
   background-color: hsl(173, 98%, 16%, 0.8);
   border: 2px solid #dfdce3;
   padding: 0.75em;
@@ -65,9 +65,9 @@ table tbody tr td,
 table th {
   background-color: hsl(173, 98%, 16%, 0.1) !important;
   color: #101010;
-  padding: 0.75em;
+  padding: 0.2em 0.5em;
   text-align: center;
-  border: 3px solid #e5e5e5e5
+  border: 3px solid #e5e5e5e5;
 }
 
 table th {

@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import firebase from "../../services/firebaseConnection";
 import { toast } from "react-toastify";
 import "./addStudent.css";
@@ -9,6 +10,8 @@ import { MdAddCircle } from "react-icons/md";
 
 export default function AddStudent() {
   const { user } = useContext(AuthContext);
+  const { id } = useParams();
+  const history = useHistory();
   const [load, setLoad] = useState(true);
 
   const [nome, setNome] = useState("");
@@ -23,6 +26,7 @@ export default function AddStudent() {
   const [turmas, setTurmas] = useState([]);
   const [turmaSelect, setTurmaSelect] = useState(0);
   const [students, setStudents] = useState([]);
+  const [idStudent, setIdStudent] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -50,6 +54,11 @@ export default function AddStudent() {
 
           setTurmas(list);
           setLoad(false);
+
+          if (id) {
+            // eslint-disable-next-line no-undef
+            loadID(dataList);
+          }
         })
         .catch((error) => {
           alert("Erro ao buscar informações");
@@ -59,9 +68,64 @@ export default function AddStudent() {
     }
 
     load();
-  }, []);
+  }, [id]);
+
+  async function loadID(dataList) {
+    await firebase
+      .firestore()
+      .collection("students")
+      .doc(id)
+      .get()
+      .then((data) => {
+        setCidade(data.data().cidade);
+        setContato(data.data().contato);
+        setCurso(data.data().curso);
+        setNascimento(data.data().nascimento);
+        setEndereco(data.data().endereco);
+        setEstado(data.data().estado);
+        setMatricula(data.data().matricula);
+        setStatus(data.data().status);
+
+        let index = dataList.findIndex(
+          (data) => data.id === dataList.data().turmaSelecionada
+        );
+
+        setTurmaSelect(index);
+        setIdStudent(true);
+      })
+      .catch((error) => {
+        setIdStudent(false);
+      });
+  }
+
   async function saveStudent(e) {
     e.preventDefault();
+
+    if (idStudent) {
+      await firebase.firestore().collection("students").doc(id).update({
+        nome: nome,
+        nascimento: nascimento,
+        endereco: endereco,
+        cidade: cidade,
+        estado: estado,
+        contato: contato,
+        matricula: matricula,
+        curso: turmas[turmaSelect].curso,
+        turmaSelecionada: turmas[turmaSelect].codigo,
+        status: status,
+        uidCadastradoPor: user.uid,
+      })
+      .then(()=>{
+        toast.success('Editado com sucesso.')
+        setTurmaSelect(0);
+        history.push('./alunos')
+
+      }).catch(err =>{
+        toast.error('Erro ao editar dados')
+      })
+
+      return;
+    }
 
     await firebase
       .firestore()

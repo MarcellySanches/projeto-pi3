@@ -11,6 +11,7 @@ import {
 import Header from "../../components/Header";
 import TitleArea from "../../components/TitleArea";
 import { Link } from "react-router-dom";
+import Modal from "../../components/Modal";
 
 export default function Students() {
   const [dashStudents, setDashStudents] = useState([]);
@@ -18,33 +19,35 @@ export default function Students() {
   const [moreStudents, setMoreStudents] = useState(false);
   const [noData, setNoData] = useState(false);
   const [lastData, setLastData] = useState();
+  const [showStudent, setShowStudent] = useState(false);
+  const [studentData, setStudentData] = useState();
 
   useEffect(() => {
+    async function getStudents() {
+      await firebase
+        .firestore()
+        .collection("students")
+        .orderBy("nome", "asc")
+        .get()
+        .then((data) => {
+          verifyData(data);
+        })
+        .catch((error) => {
+          setMoreStudents(false);
+        });
+
+      setLoad(false);
+    }
+
     getStudents();
+
     return () => {};
   }, []);
-
-  async function getStudents() {
-    await firebase
-      .firestore()
-      .collection("students")
-      .orderBy("nome", "asc")
-      .limit(10)
-      .get()
-      .then((data) => {
-        verifyData(data);
-      })
-      .catch((error) => {
-        setMoreStudents(false);
-      });
-
-    setLoad(false);
-  }
 
   async function verifyData(data) {
     const noStudentsData = data.size === 0;
 
-    if (!noData) {
+    if (!noStudentsData) {
       let list = [];
 
       data.forEach((value) => {
@@ -74,6 +77,11 @@ export default function Students() {
     setMoreStudents(false);
   }
 
+  function openStudent(itemId) {
+    setShowStudent(!showStudent);
+    setStudentData(itemId);
+  }
+
   return (
     <div>
       <Header />
@@ -98,8 +106,8 @@ export default function Students() {
               <MdOutlineAddCircle size={25} />
             </Link>
 
-            <table className="">
-              <thead class="">
+            <table>
+              <thead>
                 <tr>
                   <th scope="col">Matrícula</th>
                   <th scope="col">Nome</th>
@@ -128,22 +136,31 @@ export default function Students() {
                       </td>
                       <td data-label="Botoes">
                         <button
-                          classnName="btn-table"
+                          className="btn-table"
                           style={{
                             backgroundColor: "#578c90",
                             color: "#e5e5e5e5",
                           }}
+                          onClick={() => openStudent(item)}
                         >
-                          <MdSearch size={20} />
+                          <MdSearch size={15} />
                         </button>
                         <button
-                          classnName="btn-table"
+                          className="btn-table"
                           style={{
                             backgroundColor: "#339966",
                             color: "#e5e5e5e5",
                           }}
                         >
-                          <MdModeEditOutline size={20} />
+                          <Link
+                            to={`adicionarAluno/${item.id}}`}
+                            style={{
+                              backgroundColor: "#339966",
+                              color: "#e5e5e5e5",
+                            }}
+                          >
+                            <MdModeEditOutline size={15} />
+                          </Link>
                         </button>
                       </td>
                     </tr>
@@ -154,6 +171,8 @@ export default function Students() {
           </>
         )}
       </div>
+
+      {showStudent && <Modal content={studentData} close={openStudent} />}
     </div>
   );
 }
