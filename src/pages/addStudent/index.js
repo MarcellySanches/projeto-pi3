@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { useState, useEffect, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import firebase from "../../services/firebaseConnection";
@@ -25,9 +24,7 @@ export default function AddStudent() {
   const [curso, setCurso] = useState([]);
   const [turmas, setTurmas] = useState([]);
   const [turmaSelect, setTurmaSelect] = useState(0);
-  const [idStudent, setIdStudent] = useState(false);
-
-  const paramsId = id.replace("}", "");
+  const [idStudent, setIdStudent] = useState(false);  
 
   useEffect(() => {
     async function load() {
@@ -56,7 +53,7 @@ export default function AddStudent() {
           setTurmas(list);
           setLoad(false);
 
-          if (paramsId) {
+          if (id) {            
             console.log("passei aqui ");
             setIdStudent(true);
             console.log("passei aqui id ", idStudent);
@@ -71,9 +68,10 @@ export default function AddStudent() {
     }
 
     load();
-  }, [paramsId]);
+  }, [id]);
 
   async function getDataId(data) {
+    const paramsId = id.replace('}',"")
     await firebase
       .firestore()
       .collection("students")
@@ -107,8 +105,11 @@ export default function AddStudent() {
 
   async function saveStudent(e) {
     e.preventDefault();
+    
+    
 
-    if (paramsId) {
+    if (id) {
+      const paramsId = id.replace('}',"")
       await firebase
         .firestore()
         .collection("students")
@@ -167,6 +168,7 @@ export default function AddStudent() {
         setStatus("Ativo");
         setTurmaSelect(0);
         console.log("ok");
+        history.push("/alunos");
       })
       .catch((error) => {
         toast.error(error);
