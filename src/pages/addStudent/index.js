@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useState, useEffect, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import firebase from "../../services/firebaseConnection";
@@ -13,7 +14,6 @@ export default function AddStudent() {
   const { id } = useParams();
   const history = useHistory();
   const [load, setLoad] = useState(true);
-
   const [nome, setNome] = useState("");
   const [nascimento, setNascimento] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -25,8 +25,9 @@ export default function AddStudent() {
   const [curso, setCurso] = useState([]);
   const [turmas, setTurmas] = useState([]);
   const [turmaSelect, setTurmaSelect] = useState(0);
-  const [students, setStudents] = useState([]);
   const [idStudent, setIdStudent] = useState(false);
+
+  const paramsId = id.replace("}", "");
 
   useEffect(() => {
     async function load() {
@@ -55,9 +56,11 @@ export default function AddStudent() {
           setTurmas(list);
           setLoad(false);
 
-          if (id) {
-            // eslint-disable-next-line no-undef
-            loadID(dataList);
+          if (paramsId) {
+            console.log("passei aqui ");
+            setIdStudent(true);
+            console.log("passei aqui id ", idStudent);
+            getDataId(data);
           }
         })
         .catch((error) => {
@@ -68,30 +71,34 @@ export default function AddStudent() {
     }
 
     load();
-  }, [id]);
+  }, [paramsId]);
 
-  async function loadID(dataList) {
+  async function getDataId(data) {
     await firebase
       .firestore()
       .collection("students")
-      .doc(id)
+      .doc(paramsId)
       .get()
-      .then((data) => {
-        setCidade(data.data().cidade);
-        setContato(data.data().contato);
-        setCurso(data.data().curso);
-        setNascimento(data.data().nascimento);
-        setEndereco(data.data().endereco);
-        setEstado(data.data().estado);
-        setMatricula(data.data().matricula);
-        setStatus(data.data().status);
+      .then((snapshot) => {
+        console.log(snapshot.data().nome);
+        console.log(paramsId);
+        setNome(snapshot.data().nome);
+        setCidade(snapshot.data().cidade);
+        setContato(snapshot.data().contato);
+        setCurso(snapshot.data().curso);
+        setNascimento(snapshot.data().nascimento);
+        setEndereco(snapshot.data().endereco);
+        setEstado(snapshot.data().estado);
+        setMatricula(snapshot.data().matricula);
+        setStatus(snapshot.data().status);
 
-        let index = dataList.findIndex(
-          (data) => data.id === dataList.data().turmaSelecionada
+        let index = data.findIndex(
+          (item) => item.id === snapshot.data().turmaSelecionada
         );
 
         setTurmaSelect(index);
         setIdStudent(true);
+        console.log(idStudent);
       })
       .catch((error) => {
         setIdStudent(false);
@@ -101,28 +108,32 @@ export default function AddStudent() {
   async function saveStudent(e) {
     e.preventDefault();
 
-    if (idStudent) {
-      await firebase.firestore().collection("students").doc(id).update({
-        nome: nome,
-        nascimento: nascimento,
-        endereco: endereco,
-        cidade: cidade,
-        estado: estado,
-        contato: contato,
-        matricula: matricula,
-        curso: turmas[turmaSelect].curso,
-        turmaSelecionada: turmas[turmaSelect].codigo,
-        status: status,
-        uidCadastradoPor: user.uid,
-      })
-      .then(()=>{
-        toast.success('Editado com sucesso.')
-        setTurmaSelect(0);
-        history.push('./alunos')
-
-      }).catch(err =>{
-        toast.error('Erro ao editar dados')
-      })
+    if (paramsId) {
+      await firebase
+        .firestore()
+        .collection("students")
+        .doc(paramsId)
+        .update({
+          nome: nome,
+          nascimento: nascimento,
+          endereco: endereco,
+          cidade: cidade,
+          estado: estado,
+          contato: contato,
+          matricula: matricula,
+          curso: turmas[turmaSelect].curso,
+          turmaSelecionada: turmas[turmaSelect].codigo,
+          status: status,
+          uidCadastradoPor: user.uid,
+        })
+        .then(() => {
+          toast.success("Editado com sucesso.");
+          setTurmaSelect(0);
+          history.push("/alunos");
+        })
+        .catch((err) => {
+          toast.error("Erro ao editar dados");
+        });
 
       return;
     }
